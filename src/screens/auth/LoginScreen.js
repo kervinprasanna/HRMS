@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, Alert, ActivityIndicator } from 'react-native';
 import useAuthStore from '../../store/useAuthStore';
 import useThemeStore from '../../store/useThemeStore';
 import { COLORS, SIZES } from '../../constants/theme';
@@ -7,25 +7,20 @@ import { COLORS, SIZES } from '../../constants/theme';
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { login } = useAuthStore();
+  const { login, isLoading } = useAuthStore();
   const { isDarkMode } = useThemeStore();
   const theme = isDarkMode ? COLORS.dark : COLORS.light;
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert('Error', 'Please fill in all fields');
       return;
     }
     
-    // Simple mock logic for HR vs Employee based on email
-    const role = email.toLowerCase().includes('hr') ? 'HR' : 'Employee';
-    
-    login({
-      id: '1',
-      name: role === 'HR' ? 'HR Admin' : 'John Doe',
-      email: email,
-      role: role
-    });
+    const response = await login(email, password);
+    if (!response.success) {
+      Alert.alert('Login Failed', response.error);
+    }
   };
 
   const styles = StyleSheet.create({
@@ -116,8 +111,16 @@ export default function LoginScreen() {
             />
           </View>
 
-          <TouchableOpacity style={styles.button} onPress={handleLogin}>
-            <Text style={styles.buttonText}>Sign In</Text>
+          <TouchableOpacity style={{ alignSelf: 'flex-end', marginBottom: SIZES.padding }}>
+            <Text style={{ color: theme.primary, fontWeight: '600' }}>Forgot Password?</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.button} onPress={handleLogin} disabled={isLoading}>
+            {isLoading ? (
+              <ActivityIndicator color="#FFFFFF" />
+            ) : (
+              <Text style={styles.buttonText}>Sign In</Text>
+            )}
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>

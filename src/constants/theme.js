@@ -11,6 +11,8 @@ export const COLORS = {
     warning: '#F59E0B',
     success: '#10B981',
     surface: '#FFFFFF',
+    headerBackground: '#7FE7B4',
+    headerText: '#000000',
   },
   dark: {
     background: '#111827',
@@ -24,6 +26,8 @@ export const COLORS = {
     warning: '#FBBF24',
     success: '#34D399',
     surface: '#1F2937',
+    headerBackground: '#111827',
+    headerText: '#FFFFFF',
   }
 };
 
